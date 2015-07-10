@@ -1,0 +1,16 @@
+[
+{
+  "modid": "iCraft",
+  "name": "iCraft",
+  "description": "Smartphones in MineCraft",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["HarleyWF"],
+  "credits": "Thanks to MikeDark, Sam_Wave and RataoGTI.",
+  "logoFile": "logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
