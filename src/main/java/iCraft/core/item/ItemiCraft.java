@@ -25,7 +25,7 @@ public class ItemiCraft extends ItemBase
 		super();
 		setMaxStackSize(1);
 	}
-	
+
 	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean flag)
 	{
@@ -64,9 +64,7 @@ public class ItemiCraft extends ItemBase
 			return 0;
 		}
 
-		int number = itemStack.stackTagCompound.getInteger("number");
-
-		return number;
+		return itemStack.stackTagCompound.getInteger("number");
 	}
 
 	@Override
@@ -77,14 +75,14 @@ public class ItemiCraft extends ItemBase
 		else if (itemStack.stackTagCompound.getInteger("called") == 1)
 			entityPlayer.openGui(ICraft.instance, 6, world, 0, 0, 0);
 		else if (itemStack.stackTagCompound.getInteger("called") == 2)
-			entityPlayer.openGui(ICraft.instance, 7, world, 0, 0, 0);//TODO - WIP
+			entityPlayer.openGui(ICraft.instance, 7, world, 0, 0, 0);
 
 		return itemStack;
 	}
 
 	@Override
 	public EnumRarity getRarity(ItemStack itemStack)
-    {
+	{
 		return EnumRarity.epic;
-    }
+	}
 }

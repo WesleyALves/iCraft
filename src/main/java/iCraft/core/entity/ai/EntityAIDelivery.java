@@ -1,40 +1,42 @@
 package iCraft.core.entity.ai;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import iCraft.core.entity.EntityPizzaDelivery;
 import iCraft.core.utils.ICraftUtils;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 
 public class EntityAIDelivery extends EntityAIBase
 {
 	private EntityPizzaDelivery theEntity;
 	private float minDist;
+	private World theWorld;
 	private EntityPlayer player;
 
 	public EntityAIDelivery(EntityPizzaDelivery theEntity, float min)
 	{
 		this.theEntity = theEntity;
 		minDist = min;
+		theWorld = theEntity.worldObj;
 		setMutexBits(3);
 	}
 
 	@Override
 	public boolean shouldExecute()
 	{
-		EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(theEntity.getPlayer());
+		EntityPlayer player = theWorld.getPlayerEntityByName(theEntity.getPlayer());
 
-		if(player == null)
+		if (player == null)
 		{
 			return false;
 		}
-		else if(theEntity.worldObj.provider.dimensionId != player.worldObj.provider.dimensionId)
+		else if (theEntity.worldObj.provider.dimensionId != player.worldObj.provider.dimensionId)
 		{
 			return false;
 		}
-		else if(theEntity.getDistanceSqToEntity(player) > (minDist * minDist))
+		else if (theEntity.getDistanceSqToEntity(player) > (minDist * minDist))
 		{
 			return false;
 		}

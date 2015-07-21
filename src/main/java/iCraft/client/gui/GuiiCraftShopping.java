@@ -4,18 +4,13 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import iCraft.core.BuyableItems;
 import iCraft.core.ICraft;
-import iCraft.core.inventory.container.ContaineriCraft;
 import iCraft.core.network.MessageCraftBay;
 import iCraft.core.network.NetworkHandler;
 import iCraft.core.utils.ICraftClientUtils;
-import iCraft.core.utils.ICraftClientUtils.ResourceType;
 import iCraft.core.utils.ICraftUtils;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -23,16 +18,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiiCraftShopping extends GuiContainer
+public class GuiiCraftShopping extends GuiiCraftBase
 {
 	private int i = 0;
 	private GuiButton left;
 	private GuiButton right;
 	private GuiButton buy;
 
-	public GuiiCraftShopping(InventoryPlayer inventory)
+	public GuiiCraftShopping(String resource)
 	{
-		super(new ContaineriCraft(inventory));
+		super(resource);
 	}
 
 	@Override
@@ -41,9 +36,6 @@ public class GuiiCraftShopping extends GuiContainer
 		super.initGui();
 		Keyboard.enableRepeatEvents(false);
 		buttonList.clear();
-
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
 
 		left = new GuiButton(0, guiWidth + 53, guiHeight + 50, 15, 20, "<");
 		right = new GuiButton(1, guiWidth + 95, guiHeight + 50, 15, 20, ">");
@@ -55,32 +47,10 @@ public class GuiiCraftShopping extends GuiContainer
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		GL11.glPushMatrix();
-		GL11.glScalef(0.5F, 0.5F, 0.5F);
-		fontRendererObj.drawString(ICraftClientUtils.getTime(), 148, 45, 0xffffff);
-		GL11.glPopMatrix();
-
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-	{
-		mc.renderEngine.bindTexture(ICraftClientUtils.getResource(ResourceType.GUI, "GuiiCraftShopping.png"));
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-	}
-
-	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTick)
 	{
 		super.drawScreen(mouseX, mouseY, partialTick);
 
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
 		GL11.glPushMatrix();
 		RenderHelper.enableGUIStandardItemLighting();
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -89,19 +59,21 @@ public class GuiiCraftShopping extends GuiContainer
 		GL11.glEnable(GL11.GL_LIGHTING);
 		itemRender.zLevel = 100.0F;
 
-		itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), BuyableItems.items.get(i), guiWidth + 73, guiHeight + 51);
-		itemRender.renderItemOverlayIntoGUI(fontRendererObj, mc.getTextureManager(), BuyableItems.items.get(i), guiWidth + 73, guiHeight + 51);
+		itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), ICraftUtils.items.get(i), guiWidth + 73, guiHeight + 51);
+		itemRender.renderItemOverlayIntoGUI(fontRendererObj, mc.getTextureManager(), ICraftUtils.items.get(i), guiWidth + 73, guiHeight + 51);
 
 		itemRender.zLevel = 0.0F;
 		GL11.glDisable(GL11.GL_LIGHTING);
-		if (func_146978_c(73, 51, 16, 16, mouseX, mouseY))
+		if (isMouseOver(73, 51, 16, 16, mouseX, mouseY))
 		{
-			renderToolTip(BuyableItems.items.get(i), mouseX, mouseY);
+			renderToolTip(ICraftUtils.items.get(i), mouseX, mouseY);
 		}
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		RenderHelper.enableStandardItemLighting();
+
+		drawString(ICraftClientUtils.getTime(), 148, 45, 0xffffff, true, 0.5F);
 	}
 
 	@Override
@@ -113,13 +85,13 @@ public class GuiiCraftShopping extends GuiContainer
 		switch (guiButton.id)
 		{
 			case 0:
-				i = (i - 1 >= 0 ? i - 1 : BuyableItems.items.size() - 1);
+				i = (i - 1 >= 0 ? i - 1 : ICraftUtils.items.size() - 1);
 				break;
 			case 1:
-				i = (i + 1 < BuyableItems.items.size() ? i + 1 : 0);
+				i = (i + 1 < ICraftUtils.items.size() ? i + 1 : 0);
 				break;
 			case 2:
-				NetworkHandler.sendToServer(new MessageCraftBay(Item.getIdFromItem(BuyableItems.items.get(i).getItem()), BuyableItems.items.get(i).getItemDamage()));
+				NetworkHandler.sendToServer(new MessageCraftBay(Item.getIdFromItem(ICraftUtils.items.get(i).getItem()), ICraftUtils.items.get(i).getItemDamage()));
 				mc.thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.BLUE + "[" + EnumChatFormatting.GOLD + "iCraft" + EnumChatFormatting.BLUE + "] " + EnumChatFormatting.GREEN + ICraftUtils.localize("msg.iCraft.iBay")));
 				//mc.thePlayer.openGui(ICraft.instance, 0, mc.theWorld, 0, 0, 0);
 				mc.thePlayer.closeScreen();
@@ -134,8 +106,8 @@ public class GuiiCraftShopping extends GuiContainer
 
 		if (button == 0)
 		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
+			int xAxis = x - guiWidth;
+			int yAxis = y - guiHeight;
 			//Exit
 			if (xAxis >= 143 && xAxis <= 158 && yAxis >= 51 && yAxis <= 66)
 			{

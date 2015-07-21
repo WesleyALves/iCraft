@@ -1,12 +1,15 @@
 package iCraft.core.network;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
 import iCraft.core.ICraft;
 import iCraft.core.item.ItemiCraft;
 import io.netty.buffer.ByteBuf;
@@ -48,10 +51,10 @@ public class MessageIncomeCalling extends MessageBase<MessageIncomeCalling>
 	@Override
 	public void handleServerSide(MessageIncomeCalling message, EntityPlayer player)
 	{
-		List<EntityPlayerMP> playersOnline = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList;
+		World world = player.worldObj;
 
 		search:
-		for (EntityPlayerMP players : playersOnline)
+		for (EntityPlayerMP players : (List<EntityPlayerMP>)world.playerEntities)
 		{
 			if (players != player)
 			{
@@ -60,7 +63,8 @@ public class MessageIncomeCalling extends MessageBase<MessageIncomeCalling>
 				{
 					if (itemStack != null && itemStack.getItem() instanceof ItemiCraft && itemStack.stackTagCompound.hasKey("number") && itemStack.stackTagCompound.getInteger("number") == message.calledNumber)
 					{
-						if (!itemStack.stackTagCompound.hasKey("called") || itemStack.stackTagCompound.getInteger("called") == 0)
+						List<String> blackList = readNBT(itemStack.stackTagCompound);
+						if (!blackList.contains(player.getCommandSenderName()) && (!itemStack.stackTagCompound.hasKey("called") || itemStack.stackTagCompound.getInteger("called") == 0))
 						{
 							itemStack.stackTagCompound.setInteger("called", 1);
 							itemStack.stackTagCompound.setInteger("callingNumber", message.number);
@@ -85,5 +89,18 @@ public class MessageIncomeCalling extends MessageBase<MessageIncomeCalling>
 				}
 			}
 		}
+	}
+
+	private List<String> readNBT(NBTTagCompound nbtTags)
+	{
+		NBTTagList tagList = nbtTags.getTagList("blacklist", 10);
+		List<String> blackList = new ArrayList<String>();
+		for (int i = 0; i < tagList.tagCount(); i++)
+		{
+			NBTTagCompound tagCompound = tagList.getCompoundTagAt(i);
+			String str = tagCompound.getString("player" + i);
+			blackList.add(i, str);
+		}
+		return blackList;
 	}
 }

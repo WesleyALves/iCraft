@@ -23,7 +23,7 @@ public class RenderPackingCase extends TileEntitySpecialRenderer
 	private void render(TilePackingCase tileEntity, float x, float y, float z, float partialTick)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
+		GL11.glTranslatef(x + 0.5F, y + 1.5F, z + 0.5F);
 		bindTexture(ICraftClientUtils.getResource(ResourceType.RENDER, "PackingCase.png"));
 
 		switch(tileEntity.facing)

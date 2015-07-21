@@ -15,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
-import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -23,29 +22,14 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ICraftEventHandler
 {
 	@SubscribeEvent
-	public void onItemToss(ItemTossEvent event)
-	{
-		if (event.entityItem.getEntityItem() != null && event.entityItem.getEntityItem().getItem() instanceof ItemiCraft)
-		{
-			ItemStack iCraft = event.entityItem.getEntityItem();
-			if (iCraft.stackTagCompound.hasKey("called") && iCraft.stackTagCompound.getInteger("called") != 0)
-			{
-				event.player.inventory.addItemStackToInventory(iCraft);
-				event.setCanceled(true);
-			}
-			NetworkHandler.sendTo(new MessageClosePlayer(), (EntityPlayerMP)event.player);
-		}
-	}
-
-	@SubscribeEvent
 	public void onItemExpire(ItemExpireEvent event)
 	{
-		if (event.entityItem.getEntityItem().getItem() instanceof ItemiCraft)
+		if (event.entityItem != null && event.entityItem.getEntityItem().getItem() instanceof ItemiCraft)
 		{
 			ItemStack iCraft = event.entityItem.getEntityItem();
 			if (iCraft.stackTagCompound.hasKey("called") && iCraft.stackTagCompound.getInteger("called") != 0)
 			{
-				ICraftUtils.changeCalledStatus(iCraft, 0, 0, (iCraft.stackTagCompound.getBoolean("isCalling") == true ? true : false));
+				ICraftUtils.changeCalledStatus(iCraft, 0, 0, iCraft.stackTagCompound.getBoolean("isCalling"));
 			}
 		}
 	}
@@ -63,7 +47,7 @@ public class ICraftEventHandler
 				{
 					if (itemStack.stackTagCompound.hasKey("called") && itemStack.stackTagCompound.getInteger("called") != 0)
 					{
-						ICraftUtils.changeCalledStatus(itemStack, 0, 0, (itemStack.stackTagCompound.getBoolean("isCalling") == true ? true : false));
+						ICraftUtils.changeCalledStatus(itemStack, 0, 0, itemStack.stackTagCompound.getBoolean("isCalling"));
 					}
 					NetworkHandler.sendTo(new MessageClosePlayer(), (EntityPlayerMP)player);
 				}

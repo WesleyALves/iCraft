@@ -1,19 +1,11 @@
 package iCraft.client.gui;
 
-import iCraft.core.ICraft;
-import iCraft.core.inventory.container.ContaineriCraft;
-import iCraft.core.utils.ICraftClientUtils;
-import iCraft.core.utils.ICraftClientUtils.ResourceType;
-
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import iCraft.core.ICraft;
 
 @SideOnly(Side.CLIENT)
-public class GuiiCraftCalc extends GuiContainer
+public class GuiiCraftCalc extends GuiiCraftBase
 {
 	private String exNum1 = "";
 	private String exNum2 = "";
@@ -23,22 +15,19 @@ public class GuiiCraftCalc extends GuiContainer
 
 	public boolean equalsPressed = false;
 
-	public GuiiCraftCalc(InventoryPlayer inventory)
+	public GuiiCraftCalc(String resource)
 	{
-		super(new ContaineriCraft(inventory));
+		super(resource);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		GL11.glPushMatrix();
-		GL11.glScalef(0.5F, 0.5F, 0.5F);
-		fontRendererObj.drawString(ICraftClientUtils.getTime(), 164, 58, 0xffffff);
-		fontRendererObj.drawString((getExResult().endsWith(".0") ? getExResult().substring(0, getExResult().indexOf(".")) : getExResult()), 146, 78, 0x404040);
-		GL11.glPopMatrix();
+	public void drawScreen(int mouseX, int mouseY, float partialTick)
+    {
+		super.drawScreen(mouseX, mouseY, partialTick);
 
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-	}
+		drawString((getExResult().endsWith(".0") ? getExResult().substring(0, getExResult().indexOf(".")) : getExResult()), 146, 78, 0x404040, true, 0.5F);
+		drawTime();
+    }
 
 	public String getResult()
 	{
@@ -85,20 +74,7 @@ public class GuiiCraftCalc extends GuiContainer
 
 	public String getExResult()
 	{
-		String exResult = (exNum1 != "" ? (operation != 0 ? (exNum2 != "" ? (!equalsPressed ? exNum1 + op(operation) + exNum2 : getResult()) : exNum1 + op(operation)) : exNum1) : "");
-		return exResult;
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-	{
-		mc.renderEngine.bindTexture(ICraftClientUtils.getResource(ResourceType.GUI, "GuiiCraftCalc.png"));
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
+		return (!exNum1.equals("") ? (operation != 0 ? (!exNum2.equals("") ? (!equalsPressed ? exNum1 + op(operation) + exNum2 : getResult()) : exNum1 + op(operation)) : exNum1) : "");
 	}
 
 	@Override
@@ -108,8 +84,8 @@ public class GuiiCraftCalc extends GuiContainer
 
 		if(button == 0)
 		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
+			int xAxis = x - guiWidth;
+			int yAxis = y - guiHeight;
 			//Exit
 			if (xAxis >= 80 && xAxis <= 95 && yAxis >= 143 && yAxis <= 158)
 			{
@@ -251,7 +227,7 @@ public class GuiiCraftCalc extends GuiContainer
 			//Equals
 			if(xAxis >= 107 && xAxis <= 123 && yAxis >= 102 && yAxis <= 136)
 			{
-				if (exNum2 != "")
+				if (!exNum2.equals(""))
 				{
 					equalsPressed = true;
 				}

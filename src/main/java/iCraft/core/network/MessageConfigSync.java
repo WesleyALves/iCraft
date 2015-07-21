@@ -1,7 +1,5 @@
 package iCraft.core.network;
 
-import java.util.Arrays;
-
 import iCraft.core.ICraft;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,11 +13,11 @@ public class MessageConfigSync extends MessageBase<MessageConfigSync>
 	{
 		ICraft.isVoiceEnabled = buf.readBoolean();
 		ICraft.VOICE_PORT = buf.readInt();
-		for (int i : Arrays.asList(buf.readInt()))
+		int size = buf.readInt();
+		ICraft.buyableItems = new int[size];
+		for (int i = 0; i < size; i++)
 		{
-			int index = 0;
-			ICraft.buyableItems[index] = buf.readInt();
-			index++;
+			ICraft.buyableItems[i] = buf.readInt();
 		}
 	}
 
@@ -28,6 +26,7 @@ public class MessageConfigSync extends MessageBase<MessageConfigSync>
 	{
 		buf.writeBoolean(ICraft.isVoiceEnabled);
 		buf.writeInt(ICraft.VOICE_PORT);
+		buf.writeInt(ICraft.buyableItems.length);
 		for (int i : ICraft.buyableItems)
 		{
 			buf.writeInt(i);

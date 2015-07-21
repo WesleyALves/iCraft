@@ -23,30 +23,31 @@ public class NetworkHandler
 		INSTANCE.registerMessage(MessageConfigSync.class, MessageConfigSync.class, 3, Side.CLIENT);
 		INSTANCE.registerMessage(MessageClosePlayer.class, MessageClosePlayer.class, 4, Side.CLIENT);
 		INSTANCE.registerMessage(MessageDelivery.class, MessageDelivery.class, 5, Side.SERVER);
+		INSTANCE.registerMessage(MessageBlacklist.class, MessageBlacklist.class, 6, Side.SERVER);
 	}
 
 	public static void sendToServer(IMessage message)
 	{
-        INSTANCE.sendToServer(message);
-    }
+		INSTANCE.sendToServer(message);
+	}
 
-    public static void sendTo(IMessage message, EntityPlayerMP player)
-    {
-        INSTANCE.sendTo(message, player);
-    }
+	public static void sendTo(IMessage message, EntityPlayerMP player)
+	{
+		INSTANCE.sendTo(message, player);
+	}
 
-    public static void sendToAllAround(IMessage message, TargetPoint point)
-    {
-        INSTANCE.sendToAllAround(message, point);
-    }
+	public static void sendToAllAround(IMessage message, TargetPoint point)
+	{
+		INSTANCE.sendToAllAround(message, point);
+	}
 
-    public static void sendToAll(IMessage message)
-    {
-        INSTANCE.sendToAll(message);
-    }
+	public static void sendToAll(IMessage message)
+	{
+		INSTANCE.sendToAll(message);
+	}
 
-    public static void sendToDimension(IMessage message, int dimensionId)
-    {
-        INSTANCE.sendToDimension(message, dimensionId);
-    }
+	public static void sendToDimension(IMessage message, int dimensionId)
+	{
+		INSTANCE.sendToDimension(message, dimensionId);
+	}
 }

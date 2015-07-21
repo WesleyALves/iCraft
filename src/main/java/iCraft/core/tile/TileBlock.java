@@ -1,40 +1,13 @@
 package iCraft.core.tile;
 
-import java.util.HashSet;
-
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class TileBlock extends TileBase
 {
 	/** The direction this block is facing. */
 	public int facing;
-
 	public int clientFacing;
-
-	public HashSet<EntityPlayer> openedThisTick = new HashSet<EntityPlayer>();
-
-	/** The players currently using this block. */
-	public HashSet<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
-	
-	public void updateEntity()
-	{
-		if(!worldObj.isRemote)
-		{
-			openedThisTick.clear();
-		}
-	}
-
-	public void open(EntityPlayer player)
-	{
-		playersUsing.add(player);
-	}
-
-	public void close(EntityPlayer player)
-	{
-		playersUsing.remove(player);
-	}
 
 	public void writeToPacket(ByteBuf buf)
 	{	
@@ -51,12 +24,6 @@ public abstract class TileBlock extends TileBase
 			worldObj.getBlock(xCoord, yCoord, zCoord));
 			clientFacing = facing;
 		}
-	}
-	
-	@Override
-	public void validate()
-	{
-		super.validate();
 	}
 
 	@Override

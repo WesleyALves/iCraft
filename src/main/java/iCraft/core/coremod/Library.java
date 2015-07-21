@@ -27,7 +27,8 @@ public class Library
 		{
 			destination.mkdir();
 		}
-		if ((!destination.exists()) || (!destination.isDirectory())) {
+		if ((!destination.exists()) || (!destination.isDirectory()))
+		{
 			throw new RuntimeException("can't create mods/iCraft dir");
 		}
 		try {
@@ -46,7 +47,7 @@ public class Library
 	{
 		URL location = Library.class.getProtectionDomain().getCodeSource().getLocation();
 		String protocol = location.getProtocol();
-		Set<String> validLibFiles = new HashSet();
+		Set<String> validLibFiles = new HashSet<String>();
 		if (protocol.equals("file")) {
 			File source = new File(location.toURI());
 			for (int i = Library.class.getPackage().getName().replaceAll("[^\\.]", "").length() + 1; i >= 0; i--)
@@ -54,13 +55,17 @@ public class Library
 				source = source.getParentFile();
 			}
 			File[] files = new File(source, "lib").listFiles();
-			if (files == null) {
+			if (files == null)
+			{
 				ICraftCoreMod.log.warn("The iCraft/lib directory doesn't exist.");
-			} else {
-				for (File srcFile : files) {
+			}
+			else
+			{
+				for (File srcFile : files)
+				{
 					File dstFile = new File(destination, srcFile.getName());
-					if ((!dstFile.exists())
-							|| (dstFile.length() != srcFile.length())) {
+					if ((!dstFile.exists()) || (dstFile.length() != srcFile.length()))
+					{
 						FileUtils.copyFile(srcFile, dstFile);
 
 						ICraftCoreMod.log.info("Extracted library " + srcFile.getName() + ".");
@@ -69,12 +74,17 @@ public class Library
 				}
 			}
 			files = new File(source, "mod").listFiles();
-			if (files == null) {
+			if (files == null)
+			{
 				ICraftCoreMod.log.warn("The iCraft/mod directory doesn't exist.");
-			} else {
-				for (File srcFile : files) {
+			}
+			else
+			{
+				for (File srcFile : files)
+				{
 					File dstFile = prepareModExtraction(mcDir, mcVersion, srcFile.getName());
-					if (dstFile != null) {
+					if (dstFile != null)
+					{
 						FileUtils.copyFile(srcFile, dstFile);
 
 						ICraftCoreMod.log.info("Extracted mod " + srcFile.getName() + ".");
@@ -92,7 +102,7 @@ public class Library
 				source = ((JarURLConnection) location.openConnection()).getJarFile();
 				for (e = source.entries(); e.hasMoreElements();)
 				{
-					JarEntry entry = (JarEntry) e.nextElement();
+					JarEntry entry = e.nextElement();
 					String name = entry.getName();
 					if (!entry.isDirectory())
 					{
@@ -196,7 +206,7 @@ public class Library
 		}
 		String prefix = nameParts[0].toLowerCase();
 		ComparableVersion version = new ComparableVersion(nameParts[1]);
-		MutableObject<File> oldFile = new MutableObject();
+		MutableObject<File> oldFile = new MutableObject<File>();
 
 		boolean inModsDir = checkDestination(modsDir, prefix, name, version, oldFile);
 		boolean inModsVersionDir = checkDestination(modsVersionDir, prefix, name, version, oldFile);
@@ -206,13 +216,13 @@ public class Library
 		}
 		if (oldFile.getValue() != null)
 		{
-			if (((File) oldFile.getValue()).delete())
+			if (oldFile.getValue().delete())
 			{
-				ICraftCoreMod.log.info("Removed old mod " + ((File) oldFile.getValue()).getName());
+				ICraftCoreMod.log.info("Removed old mod " + oldFile.getValue().getName());
 			}
 			else
 			{
-				ICraftCoreMod.log.warn("Can't remove old mod " + ((File) oldFile.getValue()).getName());
+				ICraftCoreMod.log.warn("Can't remove old mod " + oldFile.getValue().getName());
 			}
 		}
 		return new File(modsVersionDir, name);

@@ -1,7 +1,6 @@
 package iCraft.client.render;
 
 import iCraft.client.model.ModelPizzaDelivery;
-import iCraft.core.entity.EntityPizzaDelivery;
 import iCraft.core.utils.ICraftClientUtils;
 import iCraft.core.utils.ICraftClientUtils.ResourceType;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -22,8 +21,6 @@ public class RenderPizzaDelivery extends RenderLiving
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity)
 	{
-		EntityPizzaDelivery pizza = (EntityPizzaDelivery)entity;
-
 		return ICraftClientUtils.getResource(ResourceType.RENDER, "PizzaDelivery.png");
 	}
 }

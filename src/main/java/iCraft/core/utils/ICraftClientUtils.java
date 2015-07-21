@@ -27,7 +27,9 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class ICraftClientUtils
 {
-	protected static final Minecraft mc = FMLClientHandler.instance().getClient();
+	public static boolean hour24 = true;
+	public static String homePage = "mod://mcef/home.html";
+	private static Minecraft mc = FMLClientHandler.instance().getClient();
 
 	public static void checkUpdates(EntityPlayer player)
 	{
@@ -53,9 +55,7 @@ public class ICraftClientUtils
 		for (ItemStack itemStack : itemStacks)
 		{
 			if (itemStack != null && itemStack.getItem() instanceof ItemiCraft)
-			{
-				return (isCalling ? (EntityLivingBase) clientWorld.getPlayerEntityByName(itemStack.stackTagCompound.getString("calledPlayer")) : (EntityLivingBase) clientWorld.getPlayerEntityByName(itemStack.stackTagCompound.getString("callingPlayer")));
-			}
+				return (isCalling ? clientWorld.getPlayerEntityByName(itemStack.stackTagCompound.getString("calledPlayer")) : (EntityLivingBase) clientWorld.getPlayerEntityByName(itemStack.stackTagCompound.getString("callingPlayer")));
 		}
 		return null;
 	}
@@ -66,24 +66,22 @@ public class ICraftClientUtils
 		for (ItemStack itemStack : itemStacks)
 		{
 			if (itemStack != null && itemStack.getItem() instanceof ItemiCraft)
-			{
 				return (isCalling ? itemStack.stackTagCompound.getInteger("calledNumber") : itemStack.stackTagCompound.getInteger("callingNumber"));
-			}
 		}
 		return 0;
 	}
 
-	public static enum ResourceType
+	public enum ResourceType
 	{
 		GUI("gui"),
-		SOUND("sound"),
+		SOUND("sounds"),
 		TEXTURE_BLOCKS("textures/blocks"),
 		TEXTURE_ITEMS("textures/items"),
 		RENDER("textures/render");
 
 		private String prefix;
 
-		private ResourceType(String s)
+		ResourceType(String s)
 		{
 			prefix = s;
 		}
@@ -107,13 +105,12 @@ public class ICraftClientUtils
 	
 	public static String getTime()
 	{
-		long time = (mc.theWorld.getWorldTime() + 6000L) % 24000L;
+		long time = (mc.theWorld.getWorldTime() + 6000L) % (hour24 ? 24000L : 12000L);
 
 		long hours = time / 1000L;
 		long seconds = (long) (time % 1000L * 0.06D);
 
-		String daytimeClockString = String.format("%02d", new Object[] { Long.valueOf(hours) }) + ":" + String.format("%02d", new Object[] { Long.valueOf(seconds) });
-		return daytimeClockString;
+		return String.format("%02d", new Object[] { Long.valueOf(hours) }) + ":" + String.format("%02d", new Object[] { Long.valueOf(seconds) });
 	}
 
 	public static String getAuthor(File file) throws UnsupportedAudioFileException, IOException

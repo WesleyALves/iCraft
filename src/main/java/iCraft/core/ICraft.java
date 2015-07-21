@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import iCraft.client.ClientTickHandler;
-import iCraft.client.ICraftClientEventHandler;
 import iCraft.client.mp3.MP3Player;
 import iCraft.client.voice.VoiceClient;
 import iCraft.core.block.BlockPackingCase;
@@ -42,9 +40,8 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "iCraft", name = "iCraft", version = "@VERSION@", guiFactory = "iCraft.client.gui.GuiFactoryICraft")
+@Mod(modid = "iCraft", name = "iCraft", version = "@VERSION@", guiFactory = "iCraft.client.gui.GuiFactoryICraft", dependencies = "after:MCEF")
 public class ICraft
 {
 	/** iCraft logger */
@@ -64,7 +61,7 @@ public class ICraft
 	/** The latest version of iCraft */
 	public static String newestVersion;
 
-	/** iCraft creative tab */
+	/** iCraft Creative Tab */
 	//public static CreativeTabiCraft tabiCraft = new CreativeTabiCraft();
 
 	/** iCraft Voice Managers */
@@ -146,7 +143,6 @@ public class ICraft
 	{
 		File config = event.getSuggestedConfigurationFile();
 		mp3Folder = new File(proxy.getMinecraftDir(), "mods/iCraft/mp3");
-		Side side = FMLCommonHandler.instance().getEffectiveSide();
 
 		// Set the mod's configuration
 		configuration = new Configuration(config);
@@ -156,8 +152,6 @@ public class ICraft
 
 		FMLCommonHandler.instance().bus().register(new ICraftEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ICraftEventHandler());
-		if (side == Side.CLIENT)
-			FMLCommonHandler.instance().bus().register(new ICraftClientEventHandler());
 
 		addItems();
 		addBlocks();
@@ -168,15 +162,13 @@ public class ICraft
 
 		FMLCommonHandler.instance().bus().register(new CommonPlayerTracker());
 
-		proxy.registerKeybinds();
+		proxy.registerUtilities();
 		proxy.registerRenders();
 
 		// NETworking
 		NetworkHandler.init();
 		DescriptionHandler.init();
 
-		if (side == Side.CLIENT)
-			FMLCommonHandler.instance().bus().register(new ClientTickHandler());
 
 		logger.info("Carrier has arrived.");
 	}
@@ -190,9 +182,11 @@ public class ICraft
 		// Checks the newest version
 		ICraftUtils.getNewestVersion();
 
-		//Initializes Voice Manager
+		// Initializes Voice Manager
 		if (isVoiceEnabled)
 			voiceManager = new VoiceManager();
+
+		proxy.registerNetHandler();
 
 		logger.info("Prismatic core online.");
 	}

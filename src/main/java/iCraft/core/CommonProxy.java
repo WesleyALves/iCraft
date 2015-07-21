@@ -6,8 +6,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import iCraft.core.entity.EntityPizzaDelivery;
 import iCraft.core.inventory.container.ContainerPizzaDelivery;
-import iCraft.core.inventory.container.ContaineriCraft;
 import iCraft.core.tile.TilePackingCase;
+import iCraft.core.utils.ICraftUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
@@ -26,11 +26,7 @@ public class CommonProxy
 
 		for (int Id : ICraft.buyableItems)
 		{
-			try {
-				BuyableItems.addItems(new ItemStack(Item.getItemById(Id), 1, 0));
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			ICraftUtils.addBuyableItems(new ItemStack(Item.getItemById(Id), 1, 0));
 		}
 		if (ICraft.configuration.hasChanged())
 			ICraft.configuration.save();
@@ -46,7 +42,9 @@ public class CommonProxy
 		return null;
 	}
 
-	public void registerKeybinds() {}
+	public void registerUtilities() {}
+
+	public void registerNetHandler() {}
 
 	public void registerRenders() {}
 
@@ -86,8 +84,6 @@ public class CommonProxy
 	{
 		switch (ID)
 		{
-			case 0: case 1: case 3: case 5: case 6: case 7: case 8: case 9: case 10: case 12:
-				return new ContaineriCraft(player.inventory);
 			case 11:
 				EntityPizzaDelivery pizza = (EntityPizzaDelivery)world.getEntityByID(x);
 				if (pizza != null)
@@ -105,5 +101,5 @@ public class CommonProxy
 		return (File)FMLInjectionData.data()[6];
 	}
 
-	public void openDeliveryGui(EntityPlayer player, EntityPizzaDelivery delivery) {}
+	public void stopPhoneRingSound() {}
 }

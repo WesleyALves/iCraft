@@ -28,16 +28,16 @@ public class EntityPizzaDelivery extends EntityCreature implements IInventory
 		super(world);
 
 		setSize(0.6F, 1.8F);
-        getNavigator().setBreakDoors(true);
-        getNavigator().setAvoidsWater(true);
-        tasks.addTask(0, new EntityAISwimming(this));
-        tasks.addTask(1, new EntityAIMoveIndoors(this));
-        tasks.addTask(2, new EntityAIRestrictOpenDoor(this));
-        tasks.addTask(3, new EntityAIOpenDoor(this, true));
-        tasks.addTask(4, new EntityAIMoveTowardsRestriction(this, 0.6D));
-        tasks.addTask(5, new EntityAIPizzaFollow(this, 1.0F, 4.0F));
-        tasks.addTask(5, new EntityAIDelivery(this, 4.0F));
-        tasks.addTask(5, new EntityAIAttackCrazy(this, 1.0D));
+		getNavigator().setBreakDoors(true);
+		getNavigator().setAvoidsWater(true);
+		tasks.addTask(0, new EntityAISwimming(this));
+		tasks.addTask(1, new EntityAIMoveIndoors(this));
+		tasks.addTask(2, new EntityAIRestrictOpenDoor(this));
+		tasks.addTask(3, new EntityAIOpenDoor(this, true));
+		tasks.addTask(4, new EntityAIMoveTowardsRestriction(this, 0.6D));
+		tasks.addTask(5, new EntityAIPizzaFollow(this, 1.0F, 4.0F));
+		tasks.addTask(5, new EntityAIDelivery(this, 4.0F));
+		tasks.addTask(5, new EntityAIAttackCrazy(this, 1.0D));
 	}
 
 	@Override
@@ -93,9 +93,9 @@ public class EntityPizzaDelivery extends EntityCreature implements IInventory
 
 	@Override
 	protected void dropRareDrop(int i)
-    {
-        dropItem(ICraft.pizza, 1);
-    }
+	{
+		dropItem(ICraft.pizza, 1);
+	}
 
 	@Override
 	public boolean interact(EntityPlayer player)
@@ -224,54 +224,54 @@ public class EntityPizzaDelivery extends EntityCreature implements IInventory
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
 		if (inventory[slotID] != null)
-        {
-            ItemStack itemstack;
+		{
+			ItemStack itemstack;
 
-            if (slotID == 1)
-            {
-                itemstack = inventory[slotID];
-                inventory[slotID] = null;
-                return itemstack;
-            }
-            else if (inventory[slotID].stackSize <= amount)
-            {
-                itemstack = inventory[slotID];
-                inventory[slotID] = null;
+			if (slotID == 1)
+			{
+				itemstack = inventory[slotID];
+				inventory[slotID] = null;
+				return itemstack;
+			}
+			else if (inventory[slotID].stackSize <= amount)
+			{
+				itemstack = inventory[slotID];
+				inventory[slotID] = null;
 
-                if (inventoryResetNeededOnSlotChange(slotID))
-                {
-                	resetSlotContents();
-                }
+				if (inventoryResetNeededOnSlotChange(slotID))
+				{
+					resetSlotContents();
+				}
 
-                return itemstack;
-            }
-            else
-            {
-                itemstack = inventory[slotID].splitStack(amount);
+				return itemstack;
+			}
+			else
+			{
+				itemstack = inventory[slotID].splitStack(amount);
 
-                if (inventory[slotID].stackSize == 0)
-                {
-                    inventory[slotID] = null;
-                }
+				if (inventory[slotID].stackSize == 0)
+				{
+					inventory[slotID] = null;
+				}
 
-                if (inventoryResetNeededOnSlotChange(slotID))
-                {
-                	resetSlotContents();
-                }
+				if (inventoryResetNeededOnSlotChange(slotID))
+				{
+					resetSlotContents();
+				}
 
-                return itemstack;
-            }
-        }
-        else
-        {
-            return null;
-        }
+				return itemstack;
+			}
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	private boolean inventoryResetNeededOnSlotChange(int i)
-    {
-        return i == 0;
-    }
+	{
+		return i == 0;
+	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slotID)
@@ -293,15 +293,14 @@ public class EntityPizzaDelivery extends EntityCreature implements IInventory
 	{
 		inventory[slotID] = itemStack;
 
-        if (itemStack != null && itemStack.stackSize > getInventoryStackLimit())
-        {
-            itemStack.stackSize = getInventoryStackLimit();
-        }
-
-        if (inventoryResetNeededOnSlotChange(slotID))
-        {
-            resetSlotContents();
-        }
+		if (itemStack != null && itemStack.stackSize > getInventoryStackLimit())
+		{
+			itemStack.stackSize = getInventoryStackLimit();
+		}
+		if (inventoryResetNeededOnSlotChange(slotID))
+		{
+			resetSlotContents();
+		}
 	}
 
 	@Override
@@ -332,10 +331,8 @@ public class EntityPizzaDelivery extends EntityCreature implements IInventory
 	{
 		ItemStack toSell = inventory[0];
 		if (toSell == null)
-		{
-			setInventorySlotContents(1, (ItemStack)null);
-		}
-		else if (toSell != null && toSell.getItem() == Items.iron_ingot && toSell.stackSize >= (getQuantity() * 2) && !getTrade())
+			setInventorySlotContents(1, null);
+		else if (toSell.getItem() == Items.iron_ingot && toSell.stackSize >= (getQuantity() * 2) && !getTrade())
 		{
 			setInventorySlotContents(1, new ItemStack(ICraft.pizza, getQuantity()));
 		}

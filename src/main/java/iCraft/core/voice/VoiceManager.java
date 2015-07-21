@@ -4,7 +4,6 @@ import iCraft.core.ICraft;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -99,8 +98,6 @@ public class VoiceManager
 					connections.add(connection);
 
 					ICraft.logger.info("VoiceServer: Accepted new connection.");
-				} catch(SocketException e) {
-				} catch(NullPointerException e) {
 				} catch(Exception e) {
 					ICraft.logger.error("VoiceServer: Error while accepting connection.");
 					e.printStackTrace();

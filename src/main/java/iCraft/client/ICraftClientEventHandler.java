@@ -2,6 +2,9 @@ package iCraft.client;
 
 import iCraft.client.voice.VoiceClient;
 import iCraft.core.ICraft;
+import iCraft.core.item.ItemiCraft;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 
 import java.net.InetSocketAddress;
 
@@ -51,6 +54,26 @@ public class ICraftClientEventHandler
 			ICraft.mp3Player.setRepeatType(0);
 			ICraft.mp3Player.close();
 			ICraft.logger.info("MP3 Player: Successfully stopped the player.");
+		}
+	}
+
+	@SubscribeEvent
+	public void onItemToss(ItemTossEvent event)
+	{
+		if (event.entityItem.getEntityItem() != null && event.entityItem.getEntityItem().getItem() instanceof ItemiCraft)
+		{
+			ItemStack iCraft = event.entityItem.getEntityItem();
+			if (iCraft.stackTagCompound != null && iCraft.stackTagCompound.hasKey("called") && iCraft.stackTagCompound.getInteger("called") != 0)
+			{
+				event.player.inventory.addItemStackToInventory(iCraft);
+				event.setCanceled(true);
+			}
+			if (ICraft.mp3Player != null)
+			{
+				ICraft.mp3Player.setRepeatType(0);
+				ICraft.mp3Player.close();
+				ICraft.logger.info("MP3 Player: Successfully stopped the player.");
+			}
 		}
 	}
 }

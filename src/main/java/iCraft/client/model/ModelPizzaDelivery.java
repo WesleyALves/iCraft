@@ -24,7 +24,6 @@ public class ModelPizzaDelivery extends ModelBase
     /** The left leg of the PizzaDeliveryModel */
     public ModelRenderer leftDeliveryLeg;
     public ModelRenderer deliveryNose;
-    private static final String __OBFID = "CL_00000864";
 
     public ModelPizzaDelivery()
     {

@@ -54,11 +54,9 @@ public class CommonPlayerTracker
 			{
 				if (itemStack.stackTagCompound.hasKey("called") && itemStack.stackTagCompound.getInteger("called") != 0 && itemStack.stackTagCompound.hasKey("isCalling"))
 				{
-					List<EntityPlayerMP> playersOnline = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList;
-
-					for (EntityPlayerMP players : playersOnline)
+					for (EntityPlayerMP players : (List<EntityPlayerMP>)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 					{
-						if (players.getCommandSenderName().equals((itemStack.stackTagCompound.getBoolean("isCalling") == true ? itemStack.stackTagCompound.getString("calledPlayer") : itemStack.stackTagCompound.getString("callingPlayer"))))
+						if (players.getCommandSenderName().equals((itemStack.stackTagCompound.getBoolean("isCalling") ? itemStack.stackTagCompound.getString("calledPlayer") : itemStack.stackTagCompound.getString("callingPlayer"))))
 						{
 							List<ItemStack> stacks = Arrays.asList(players.inventory.mainInventory);
 							for (ItemStack stack : stacks)
@@ -66,7 +64,7 @@ public class CommonPlayerTracker
 								if (stack != null && stack.getItem() instanceof ItemiCraft)
 								{
 									ItemiCraft iCraft = (ItemiCraft) stack.getItem();
-									if (iCraft.getNumber(stack) == (itemStack.stackTagCompound.getBoolean("isCalling") == true ? itemStack.stackTagCompound.getInteger("calledNumber") : itemStack.stackTagCompound.getInteger("callingNumber")))
+									if (iCraft.getNumber(stack) == (itemStack.stackTagCompound.getBoolean("isCalling") ? itemStack.stackTagCompound.getInteger("calledNumber") : itemStack.stackTagCompound.getInteger("callingNumber")))
 									{
 										stack.stackTagCompound.setInteger("called", 0);
 										players.closeScreen();

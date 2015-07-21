@@ -1,52 +1,30 @@
 package iCraft.client.gui;
 
 import iCraft.core.ICraft;
-import iCraft.core.inventory.container.ContaineriCraft;
 import iCraft.core.network.MessageIncomeCalling;
 import iCraft.core.network.NetworkHandler;
-import iCraft.core.utils.ICraftClientUtils;
-import iCraft.core.utils.ICraftClientUtils.ResourceType;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiiCraftNumPad extends GuiContainer
+public class GuiiCraftNumPad extends GuiiCraftBase
 {
 	public static String callNumber = "";
-	
-	public GuiiCraftNumPad(InventoryPlayer inventory)
+
+	public GuiiCraftNumPad(String resource)
 	{
-		super(new ContaineriCraft(inventory));
+		super(resource);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		GL11.glPushMatrix();
-		GL11.glScalef(0.5F, 0.5F, 0.5F);
-		fontRendererObj.drawString(ICraftClientUtils.getTime(), 164, 58, 0xffffff);
-		fontRendererObj.drawString(callNumber, 154, 74, 0x404040);
-		GL11.glPopMatrix();
+	public void drawScreen(int mouseX, int mouseY, float partialTick)
+    {
+		super.drawScreen(mouseX, mouseY, partialTick);
 
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-	{
-		mc.renderEngine.bindTexture(ICraftClientUtils.getResource(ResourceType.GUI, "GuiiCraftNumPad.png"));
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-	}
+		drawString(callNumber, 154, 74, 0x404040, true, 0.5F);
+		drawTime();
+    }
 
 	@Override
 	protected void mouseClicked(int x, int y, int button)
@@ -55,8 +33,8 @@ public class GuiiCraftNumPad extends GuiContainer
 
 		if(button == 0)
 		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
+			int xAxis = x - guiWidth;
+			int yAxis = y - guiHeight;
 			//Exit
 			if(xAxis >= 80 && xAxis <= 95 && yAxis >= 143 && yAxis <= 158)
 			{

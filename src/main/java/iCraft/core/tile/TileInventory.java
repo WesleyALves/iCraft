@@ -35,13 +35,11 @@ public abstract class TileInventory extends TileBlock implements ISidedInventory
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
+			NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < getSizeInventory())
-			{
 				setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
-			}
 		}
 	}
 
@@ -91,34 +89,32 @@ public abstract class TileInventory extends TileBlock implements ISidedInventory
 				setInventorySlotContents(slotID, null);
 				return tempStack;
 			}
-			else {
+			else
+			{
 				tempStack = getStackInSlot(slotID).splitStack(amount);
 
 				if(getStackInSlot(slotID).stackSize == 0)
 				{
 					setInventorySlotContents(slotID, null);
 				}
-
 				return tempStack;
 			}
 		}
-		else {
+		else
 			return null;
-		}
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slotID)
 	{
-		if(getStackInSlot(slotID) != null)
+		if (getStackInSlot(slotID) != null)
 		{
 			ItemStack tempStack = getStackInSlot(slotID);
 			setInventorySlotContents(slotID, null);
 			return tempStack;
 		}
-		else {
+		else
 			return null;
-		}
 	}
 
 	@Override
@@ -127,9 +123,7 @@ public abstract class TileInventory extends TileBlock implements ISidedInventory
 		inventory[slotID] = itemstack;
 
 		if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
-		{
 			itemstack.stackSize = getInventoryStackLimit();
-		}
 	}
 
 	@Override

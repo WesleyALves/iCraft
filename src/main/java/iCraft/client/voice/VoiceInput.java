@@ -38,11 +38,11 @@ public class VoiceInput extends Thread
 
 			while(voiceClient.running)
 			{
-				if(!ICraftKeyHandler.voiceMuteKey.getIsKeyPressed())
+				if(ICraftKeyHandler.canTalk)
 				{
 					targetLine.flush();
 
-					while(voiceClient.running && !ICraftKeyHandler.voiceMuteKey.getIsKeyPressed())
+					while(voiceClient.running && ICraftKeyHandler.canTalk)
 					{
 						try {
 							int availableBytes = audioInput.available();

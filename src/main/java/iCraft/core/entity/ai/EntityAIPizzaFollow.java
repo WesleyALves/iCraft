@@ -1,7 +1,6 @@
 package iCraft.core.entity.ai;
 
 import iCraft.core.entity.EntityPizzaDelivery;
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathNavigate;
@@ -33,17 +32,17 @@ public class EntityAIPizzaFollow extends EntityAIBase
 	@Override
 	public boolean shouldExecute()
 	{
-		EntityPlayer follow = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(theEntity.getPlayer());
+		EntityPlayer follow = theWorld.getPlayerEntityByName(theEntity.getPlayer());
 
-		if(follow == null)
+		if (follow == null)
 		{
 			return false;
 		}
-		else if(theEntity.worldObj.provider.dimensionId != follow.worldObj.provider.dimensionId)
+		else if (theEntity.worldObj.provider.dimensionId != follow.worldObj.provider.dimensionId)
 		{
 			return false;
 		}
-		else if(theEntity.getDistanceSqToEntity(follow) < (minDist * minDist))
+		else if (theEntity.getDistanceSqToEntity(follow) < (minDist * minDist))
 		{
 			return false;
 		}
@@ -85,23 +84,22 @@ public class EntityAIPizzaFollow extends EntityAIBase
 	{
 		theEntity.getLookHelper().setLookPositionWithEntity(player, 6.0F, theEntity.getVerticalFaceSpeed() / 10);
 
-		if(--ticker <= 0)
+		if (--ticker <= 0)
 		{
 			ticker = 10;
 
-			if(!thePathfinder.tryMoveToEntityLiving(player, moveSpeed))
-			{
-				if(theEntity.getDistanceSqToEntity(player) >= 144.0D)
+			if (!thePathfinder.tryMoveToEntityLiving(player, moveSpeed))
+				if (theEntity.getDistanceSqToEntity(player) >= 144.0D)
 				{
 					int x = MathHelper.floor_double(player.posX) - 2;
 					int y = MathHelper.floor_double(player.posZ) - 2;
 					int z = MathHelper.floor_double(player.boundingBox.minY);
 
-					for(int l = 0; l <= 4; ++l)
+					for (int l = 0; l <= 4; ++l)
 					{
-						for(int i1 = 0; i1 <= 4; ++i1)
+						for (int i1 = 0; i1 <= 4; ++i1)
 						{
-							if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(theWorld, x + l, z - 1, y + i1) && !theWorld.getBlock(x + l, z, y + i1).isNormalCube() && !theWorld.getBlock(x + l, z + 1, y + i1).isNormalCube())
+							if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(theWorld, x + l, z - 1, y + i1) && !theWorld.getBlock(x + l, z, y + i1).isNormalCube() && !theWorld.getBlock(x + l, z + 1, y + i1).isNormalCube())
 							{
 								thePathfinder.clearPathEntity();
 								theEntity.setPosition(player.posX, player.posY, player.posZ);
@@ -110,7 +108,6 @@ public class EntityAIPizzaFollow extends EntityAIBase
 						}
 					}
 				}
-			}
 		}
 	}
 }

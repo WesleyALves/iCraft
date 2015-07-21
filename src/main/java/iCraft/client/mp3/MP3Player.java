@@ -43,9 +43,6 @@ public class MP3Player
 	// status variable what player thread is doing/supposed to do
 	private int playerStatus = NOTSTARTED;
 
-	// the Player Thread
-	private Thread t;
-
 	// Repeat type for this player
 	private int repeatType = 0;
 
@@ -92,7 +89,7 @@ public class MP3Player
 						playInternal();
 					}
 				};
-				t = new Thread(r);
+				Thread t = new Thread(r);
 				t.setPriority(Thread.MAX_PRIORITY);
 				playerStatus = PLAYING;
 				t.start();
@@ -293,6 +290,6 @@ public class MP3Player
 
 	public int getMusicStatus(int i) throws UnsupportedAudioFileException, IOException
 	{
-		return (int)(playerStatus != FINISHED ? (getDuration(ICraft.musics.get(ICraft.currentMusicId)) == 0 ? 0 : player.getPosition() * i / getDuration(ICraft.musics.get(ICraft.currentMusicId))) : 0);
+		return (playerStatus != FINISHED ? (getDuration(ICraft.musics.get(ICraft.currentMusicId)) == 0 ? 0 : player.getPosition() * i / getDuration(ICraft.musics.get(ICraft.currentMusicId))) : 0);
 	}
 }

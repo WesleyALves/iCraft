@@ -17,8 +17,9 @@ import cpw.mods.fml.relauncher.Side;
 @SideOnly(Side.CLIENT)
 public class ICraftKeyHandler extends KeyHandler
 {
+	public static boolean canTalk = true;
 	public static final String keybindCategory = "iCraft";
-	public static KeyBinding voiceMuteKey = new KeyBinding("iCraft " + ICraftUtils.localize("key.mute"), Keyboard.KEY_GRAVE, keybindCategory);
+	public static KeyBinding voiceMuteKey = new KeyBinding("iCraft " + ICraftUtils.localize("key.mute"), Keyboard.KEY_M, keybindCategory);
 
 	public ICraftKeyHandler()
 	{
@@ -46,7 +47,13 @@ public class ICraftKeyHandler extends KeyHandler
 	}
 
 	@Override
-	public void keyDown(Type types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {}
+	public void keyDown(Type types, KeyBinding kb, boolean tickEnd, boolean isRepeat)
+	{
+		if (tickEnd && kb.getKeyCode() == voiceMuteKey.getKeyCode())
+		{
+			canTalk = !canTalk;
+		}
+	}
 
 	@Override
 	public void keyUp(Type types, KeyBinding kb, boolean tickEnd) {}

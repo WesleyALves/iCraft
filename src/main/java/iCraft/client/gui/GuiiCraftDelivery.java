@@ -5,16 +5,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import iCraft.core.ICraft;
-import iCraft.core.inventory.container.ContaineriCraft;
 import iCraft.core.network.MessageDelivery;
 import iCraft.core.network.NetworkHandler;
-import iCraft.core.utils.ICraftClientUtils;
-import iCraft.core.utils.ICraftClientUtils.ResourceType;
 import iCraft.core.utils.ICraftUtils;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
@@ -23,16 +18,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiiCraftDelivery extends GuiContainer
+public class GuiiCraftDelivery extends GuiiCraftBase
 {
 	private int qnt = 1;
 	private GuiButton qntMore;
 	private GuiButton qntLess;
 	private GuiButton buy;
 
-	public GuiiCraftDelivery(InventoryPlayer inventory)
+	public GuiiCraftDelivery(String resource)
 	{
-		super(new ContaineriCraft(inventory));
+		super(resource);
 	}
 
 	@Override
@@ -42,9 +37,6 @@ public class GuiiCraftDelivery extends GuiContainer
 		Keyboard.enableRepeatEvents(false);
 		buttonList.clear();
 
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-
 		qntMore = new GuiButton(0, guiWidth + 60, guiHeight + 80, 15, 20, "\u25B2");
 		qntLess = new GuiButton(1, guiWidth + 60, guiHeight + 100, 15, 20, "\u25BC");
 		buy = new GuiButton(2, guiWidth + 85, guiHeight + 90, 30, 20, "Buy");
@@ -52,26 +44,6 @@ public class GuiiCraftDelivery extends GuiContainer
 		buttonList.add(qntMore);
 		buttonList.add(qntLess);
 		buttonList.add(buy);
-	}
-
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		GL11.glPushMatrix();
-		GL11.glScalef(0.5F, 0.5F, 0.5F);
-		fontRendererObj.drawString(ICraftClientUtils.getTime(), 164, 58, 0xffffff);
-		GL11.glPopMatrix();
-
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-	{
-		mc.renderEngine.bindTexture(ICraftClientUtils.getResource(ResourceType.GUI, "GuiiCraftDelivery.png"));
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 	}
 
 	@Override
@@ -101,8 +73,6 @@ public class GuiiCraftDelivery extends GuiContainer
 	{
 		super.drawScreen(mouseX, mouseY, partialTick);
 
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
 		GL11.glPushMatrix();
 		RenderHelper.enableGUIStandardItemLighting();
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -122,11 +92,11 @@ public class GuiiCraftDelivery extends GuiContainer
 
 		itemRender.zLevel = 0.0F;
 		GL11.glDisable(GL11.GL_LIGHTING);
-		if (func_146978_c(53, 45, 16, 16, mouseX, mouseY))
+		if (isMouseOver(53, 45, 16, 16, mouseX, mouseY))
 		{
 			renderToolTip(iron, mouseX, mouseY);
 		}
-		else if (func_146978_c(107, 45, 16, 16, mouseX, mouseY))
+		else if (isMouseOver(107, 45, 16, 16, mouseX, mouseY))
 		{
 			renderToolTip(pizza, mouseX, mouseY);
 		}
@@ -134,6 +104,8 @@ public class GuiiCraftDelivery extends GuiContainer
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		RenderHelper.enableStandardItemLighting();
+
+		drawTime();
 	}
 
 	@Override
@@ -143,8 +115,8 @@ public class GuiiCraftDelivery extends GuiContainer
 
 		if (button == 0)
 		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
+			int xAxis = x - guiWidth;
+			int yAxis = y - guiHeight;
 			// Exit
 			if(xAxis >= 80 && xAxis <= 95 && yAxis >= 143 && yAxis <= 158)
 			{

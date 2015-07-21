@@ -1,11 +1,12 @@
 package iCraft.core.network;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import iCraft.core.ICraft;
 import iCraft.core.utils.ICraftUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 public class MessageReceivedCall extends MessageBase<MessageReceivedCall>
 {
@@ -38,7 +39,11 @@ public class MessageReceivedCall extends MessageBase<MessageReceivedCall>
 	public void handleClientSide(MessageReceivedCall message, EntityPlayer player)
 	{
 		player.closeScreen();
-		player.openGui(ICraft.instance, status, player.worldObj, 0, 0, 0);
+		player.openGui(ICraft.instance, message.status, player.worldObj, 0, 0, 0);
+
+		ItemStack itemStack = player.getCurrentEquippedItem();
+		if (itemStack.stackTagCompound != null && itemStack.stackTagCompound.hasKey("isCalling") && !itemStack.stackTagCompound.getBoolean("isCalling"))
+			ICraft.proxy.stopPhoneRingSound();
 	}
 
 	@Override
@@ -48,12 +53,12 @@ public class MessageReceivedCall extends MessageBase<MessageReceivedCall>
 		switch (message.status)
 		{
 			case 0:
-				updateGui(itemStack, message.isCalling);
 				ICraftUtils.changeCalledStatus(itemStack, 0, 0, message.isCalling);
+				updateGui(itemStack, 0, message.isCalling, player.worldObj);
 				break;
 			case 7:
 				ICraftUtils.changeCalledStatus(itemStack, 2, 2, message.isCalling);
-				updateGui(itemStack, message.isCalling);
+				updateGui(itemStack, 7, message.isCalling, player.worldObj);
 				break;
 			default:
 				ICraft.logger.error("Fatal Error while handling Received Call Packet at " + player.posX + ";" + player.posY + ";" + player.posZ + "\n" + "Culpa do Ratao");
@@ -61,8 +66,8 @@ public class MessageReceivedCall extends MessageBase<MessageReceivedCall>
 		}
 	}
 
-	private void updateGui(ItemStack itemStack, boolean isCalling)
+	private void updateGui(ItemStack itemStack, int status, boolean isCalling, World world)
 	{
-		NetworkHandler.sendTo(this, FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(isCalling ? itemStack.stackTagCompound.getString("calledPlayer") : itemStack.stackTagCompound.getString("callingPlayer")));
+		NetworkHandler.sendTo(new MessageReceivedCall(status, isCalling), (EntityPlayerMP)world.getPlayerEntityByName(isCalling ? itemStack.stackTagCompound.getString("calledPlayer") : itemStack.stackTagCompound.getString("callingPlayer")));
 	}
 }

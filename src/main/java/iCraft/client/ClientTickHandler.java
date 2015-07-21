@@ -8,7 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -21,7 +23,7 @@ public class ClientTickHandler
 {
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
 	private boolean hasNotified = false;
-	private int playTime = 140;
+	public static PositionedSoundRecord phoneRing = PositionedSoundRecord.func_147674_a(new ResourceLocation("iCraft:ringPhone"), 1.0F);
 
 	@SubscribeEvent
 	public void onTick(ClientTickEvent event)
@@ -48,13 +50,10 @@ public class ClientTickHandler
 				{
 					if (itemStack.stackTagCompound != null)
 					{
-						if (itemStack.stackTagCompound.hasKey("called") && itemStack.stackTagCompound.getInteger("called") == 1 && itemStack.stackTagCompound.hasKey("isCalling") && itemStack.stackTagCompound.getBoolean("isCalling") == false)
+						if (itemStack.stackTagCompound.hasKey("called") && itemStack.stackTagCompound.getInteger("called") == 1 && itemStack.stackTagCompound.hasKey("isCalling") && !itemStack.stackTagCompound.getBoolean("isCalling"))
 						{
-							if (playTime == 140)
-							{
-								mc.theWorld.playSound(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, "iCraft:ringPhone", 0.5F, 1.0F, false);
-							}
-							playTime = (playTime - 1 >= 0 ? playTime - 1 : 140);
+							if (!mc.getSoundHandler().isSoundPlaying(phoneRing))
+								mc.getSoundHandler().playSound(phoneRing);
 						}
 					}
 				}
